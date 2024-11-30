@@ -1,0 +1,11 @@
+https://download.pytorch.org/whl/cu117/torch-2.0.0%2Bcu117-cp310-cp310-win_amd64.whl
+https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_cluster-1.6.3%2Bpt20cu117-cp310-cp310-win_amd64.whl
+https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_scatter-2.1.2%2Bpt20cu117-cp310-cp310-win_amd64.whl
+https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_sparse-0.6.18%2Bpt20cu117-cp310-cp310-win_amd64.whl
+https://data.pyg.org/whl/torch-2.0.0%2Bcu117/torch_spline_conv-1.2.2%2Bpt20cu117-cp310-cp310-win_amd64.whl
+https://data.dgl.ai/wheels/cu117/dgl-1.0.1%2Bcu117-cp310-cp310-win_amd64.whl
+torch-geometric
+matplotlib==3.7.1
+scikit-learn==1.2.2
+SciencePlots
+xlrd==1.2.0
