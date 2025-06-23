@@ -386,4 +386,3 @@ if __name__ == '__main__':
                     for e in enumerate(range(epoch)):
                             trainModel(model_name=m, dataset_name=d, epoch=1, windows=window,batch_size=b, item_dataSet=getDataSetList(dataSet=d)[0], desc=desc)
 
-    print("test demo")

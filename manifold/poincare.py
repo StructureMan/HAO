@@ -30,6 +30,43 @@ class PoincareBall(Manifold):
         dist = dist_c * 2 / sqrt_c
         return dist ** 2
 
+    # def sqdistmatrix(self, p, c):
+    #     p1 = p.unsqueeze(1)
+    #     p2 = p.unsqueeze(0)
+    #     sqrt_c = c ** 0.5
+    #     midpoints = self.mobius_add(-p1, p2, c)
+    #     dist_c = artanh(sqrt_c * midpoints.norm(dim=1, keepdim=True))
+    #     dist = dist_c * 2 / c
+    #     dist = 2 / (1 + torch.exp(dist / sqrt_c))
+    #     return dist
+
+    def sqdistmatrix(self, p, c):
+        sqrt_c = c ** 0.5
+        p1 = p.unsqueeze(1)  # (n, 1, d)
+        p2 = p.unsqueeze(0)  # (1, n, d)
+
+        # 计算 Mobius 加法，输出形状应为 (n, n, d)
+        midpoints = self.mobius_add(-p1, p2, c)
+
+        # 计算范数，按最后一个维度计算，输出形状为 (n, n)
+        norm_midpoints = midpoints.norm(dim=-1)
+
+        # 计算双曲距离
+        dist_c = artanh(sqrt_c * norm_midpoints)  # 输出形状为 (n, n)
+        sqdist = dist_c * 2 / sqrt_c  # 调整尺度
+        # sqdist = torch.sigmoid(sqdist)
+        # 应用 sigmoid 函数
+        # sqdist = 1 / (torch.exp(sqdist) + self.eps)
+        # dist = 2 / (1 + torch.exp(dist))  # 输出形状为 (n, n)
+        # sqdist = 2 / (1 + torch.exp(sqdist / sqrt_c))
+        # mask = ~torch.eye(p.size(0), dtype=torch.bool, device=p.device)  # 非对角线掩码
+        # sqdist = torch.where(
+        #     (sqdist > 0.99) & mask,  # 检测接近1的非对角线元素
+        #     torch.zeros_like(sqdist),  # 符合条件的置0
+        #     sqdist  # 其他保持原值
+        # )
+        # sqdist.fill_diagonal_(1.0)
+        return torch.sigmoid(sqdist/sqrt_c)
     def _lambda_x(self, x, c):
         x_sqnorm = torch.sum(x.data.pow(2), dim=-1, keepdim=True)
         return 2 / (1. - c * x_sqnorm).clamp_min(self.min_norm)
