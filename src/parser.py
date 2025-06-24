@@ -1,12 +1,12 @@
 import argparse
 
-parser = argparse.ArgumentParser(description='Time-Series Anomaly Detection')
+parser = argparse.ArgumentParser(description='Hyperbolic Adaptive Spatial-Aware Multivariate Time Series Anomaly Detection')
 parser.add_argument('--dataset',
                     metavar='-d',
                     type=str,
                     required=False,
                     default='SMD',
-                    help="dataset from ['ASD', 'MSL'，'SMAP','SMD','SWaT','PSM']")
+                    help="dataset from ['ASD', 'MSL', 'SMAP', 'SMD', 'SWaT', 'PSM', 'MSDS', 'Synthetic', 'GPT', 'PowerSystem', 'WADI', 'GasPipeline', 'CICIDS', 'SKAB', 'SWAN', 'GECCO']")
 parser.add_argument('--model',
                     metavar='-m',
                     type=str,
@@ -30,6 +30,12 @@ parser.add_argument('--space',
                     type=str,
                     required=False,
                     default="Euclidean",
+                    help="space from [Euclidean, Hyperboloid, PoincareBall]")
+parser.add_argument('--dataRate',
+                    metavar='-m',
+                    type=float,
+                    required=True,
+                    default=0.9,
                     help="space from [Euclidean, Hyperboloid, PoincareBall]")
 parser.add_argument('--gpu',
                     metavar='-m',

@@ -9,3 +9,5 @@ matplotlib==3.7.1
 scikit-learn==1.2.2
 SciencePlots
 xlrd==1.2.0
+numpy==1.23.5
+pandas==2.2.3
