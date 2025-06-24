@@ -8,10 +8,10 @@ The data geometry-driven hyperbolic adaptive spatial-aware multivariate time ser
 (3) We can reduce confusion in explaining abnormal causes by optimizing the dual-channel structure mechanism, independently optimizing the temporal dependency relationships and multi-variable coupling relationships of multi-variable data, and improving the reliability of explanations for different abnormal causes.
 (4) We can improve the efficiency of dynamic structure optimization. Through customized learning components, we can maximize the representation performance of different data representation spaces, reduce accuracy loss in feature space conversion, and enhance the efficiency of multivariate anomaly detection.
 # How to run?
-1. Install the operating environment of the HAO model [HAO-Linux_request.txt](HAO-Linux_request.txt)
-2. Set up the HAO operating environment [preprocess.py](preprocess.py).
-3. Download the required dataset to [data](data).
-4. run cmd [main.py](main.py): python main.py --dataset ASD --model HAO --windowsize 5 --epoch 1 --space Euclidea --dataRate 0.9
+1. Install the operating environment of the HAO model [HAO-Linux_request.txt](HAO-Linux_request.txt).
+2. Download the required dataset to [data](data).
+3. Run the preprocess.py file to preprocess the downloaded data.
+4. Run cmd [main.py](main.py): python main.py --dataset ASD --model HAO --windowsize 5 --epoch 1 --space Euclidea --dataRate 0.9
 # Experimental Results Examples
 1. Multivariate Anomaly Recognition:
    The core task of multi-variable anomaly recognition is to accurately locate anomalous segments in massive data streams. To evaluate the anomaly recognition model performance of complex interference environments, we designed and conducted a series of extensive comparative experiments. First, we compared the performance of the HAO model with the comparison models listed in Table \ref{tab3}, using the ROC-AUC metric to measure the model's discrimination capability while utilizing the P-R curve and average precision (AP) to assess its ability to balance false positives and false negatives. Second, we designed a small-sample dynamic hybrid anomaly threshold determination algorithm (SSA) and combined it with the threshold-based numerical evaluation method of the comparison models to more accurately quantify the performance of each model in practical applications. Finally, we conducted an in-depth analysis of the spatio-temporal complexity of the HAO model and the impact of its components and key parameters on its robustness. Based on all experimental results, the HAO model demonstrated the best overall anomaly detection performance in complex data source scenarios.
