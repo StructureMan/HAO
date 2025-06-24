@@ -13,15 +13,15 @@ The data geometry-driven hyperbolic adaptive spatial-aware multivariate time ser
 3. Download the required dataset to [data](data).
 4. run cmd [main.py](main.py): python main.py --dataset ASD --model HAO --windowsize 5 --epoch 1 --space Euclidea --dataRate 0.9
 # Experimental Results Examples
-1. Multivariate Anomaly Recognition
+1. Multivariate Anomaly Recognition:
    The core task of multi-variable anomaly recognition is to accurately locate anomalous segments in massive data streams. To evaluate the anomaly recognition model performance of complex interference environments, we designed and conducted a series of extensive comparative experiments. First, we compared the performance of the HAO model with the comparison models listed in Table \ref{tab3}, using the ROC-AUC metric to measure the model's discrimination capability while utilizing the P-R curve and average precision (AP) to assess its ability to balance false positives and false negatives. Second, we designed a small-sample dynamic hybrid anomaly threshold determination algorithm (SSA) and combined it with the threshold-based numerical evaluation method of the comparison models to more accurately quantify the performance of each model in practical applications. Finally, we conducted an in-depth analysis of the spatio-temporal complexity of the HAO model and the impact of its components and key parameters on its robustness. Based on all experimental results, the HAO model demonstrated the best overall anomaly detection performance in complex data source scenarios.
     ![imgr.png](imgr.png)
     ![imgw.png](imgw.png)
     ![imga.png](imga.png)
-2. Multivariate Anomaly Diagnosis
+2. Multivariate Anomaly Diagnosis:
    Anomaly source diagnosis aims to accurately distinguish the root cause of anomalies and provide a basis for handling them, but existing research has not explored this area extensively. The main challenge lies in the fact that mainstream models, due to their joint learning of spatio-temporal features, cause anomaly signals to couple and spread, forming a “causal masking effect” that confuses endogenous cumulative anomalies (such as equipment degradation) with exogenous sudden disturbances (such as attacks). Therefore, the HAO model adopts a data geometry-driven framework. On the one hand, it independently decouples spatio-temporal disturbance phenomena, separates and analyzes anomaly dependencies to locate sources; on the other hand, it uses adaptive geometric representation learning to uncover structural characteristics such as hierarchy and community, providing a structured benchmark for causal interpretation.
     ![imgd.png](imgd.png)
     ![imgs.png](imgs.png)
-3. Multivariate Anomaly Causality Interpretation
+3. Multivariate Anomaly Causality Interpretation:
     The essence of multivariate anomaly causality interpretation lies in analyzing anomaly sources and their triggering mechanisms. It plays a pivotal role in discovering novel anomaly types across unknown application scenarios, while serving as a critical feedback and rectification mechanism for inevitable mislabeling and omission issues inherent in manual annotation processes. Consequently, it demonstrates substantial practical significance.
     ![imgst.png](imgst.png)
