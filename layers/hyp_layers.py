@@ -45,10 +45,18 @@ class HNNLayer(nn.Module):
     Hyperbolic neural networks layer.
     """
 
-    def __init__(self, manifold, in_features, out_features, c, dropout, act, use_bias):
+    def __init__(self, manifold, in_features, out_features, c, dropout, act, use_bias, gain):
         super(HNNLayer, self).__init__()
-        self.linear = HypLinear(manifold, in_features, out_features, c, dropout, use_bias)
+        self.linear = HypLinear(manifold, in_features, out_features, c, dropout, use_bias,gain)
         self.hyp_act = HypAct(manifold, c, c, act)
+    
+    def reset_parameters(self):
+        """
+        初始化 HNNLayer 中所有可学习参数
+        """
+        # 初始化 HypLinear 层参数
+        if hasattr(self, 'linear') and hasattr(self.linear, 'reset_parameters'):
+            self.linear.reset_parameters()
 
     def forward(self, x):
         h = self.linear.forward(x)
@@ -61,17 +69,24 @@ class HyperbolicGraphConvolution(nn.Module):
     Hyperbolic graph convolution layer.
     """
 
-    def __init__(self, manifold, in_features, out_features, c_in, c_out, dropout, act, use_bias, use_att, local_agg,adj_dim=0,adj_act=""):
+    def __init__(self, manifold, in_features, out_features, c_in, c_out, dropout, act, use_bias, use_att, local_agg,gain=0,adj_dim=0,adj_act=""):
         super(HyperbolicGraphConvolution, self).__init__()
-        self.linear = HypLinear(manifold, in_features, out_features, c_in, dropout, use_bias)
+        self.linear = HypLinear(manifold, in_features, out_features, c_in, dropout, use_bias,gain=gain)
         self.agg = HypAgg(manifold, c_in, out_features, dropout, use_att, local_agg)
         self.hyp_act = HypAct(manifold, c_in, c_out, act)
-        # self.adj = torch.triu(torch.randn(adj_dim, adj_dim, dtype=torch.float64))
-        # self.t_adj_w = nn.Sequential(HNNLayer(manifold,
-        #                                       in_features=adj_dim,
-        #                                       out_features=adj_dim,
-        #                                       c=c_in, act=act, dropout=0.0, use_bias=False), adj_act)
-        # self.adj_w = nn.parameter(torch.rand((adj_dim,adj_dim),dtype=torch.float64,requires_grad=True))
+    def reset_parameters(self):
+        """
+        初始化 HyperbolicGraphConvolution 中所有可学习参数
+        """
+        # 初始化 HypLinear 层参数
+        if hasattr(self, 'linear') and hasattr(self.linear, 'reset_parameters'):
+            self.linear.reset_parameters()
+            
+        # 初始化 HypAgg 层参数（如果有注意力机制）
+        if hasattr(self, 'agg') and hasattr(self.agg, 'att'):
+            # DenseAtt 模块的参数初始化应该在其自身类中完成
+            if hasattr(self.agg, 'att') and hasattr(self.agg.att, 'reset_parameters'):
+                self.agg.att.reset_parameters()
     def forward(self, input):
         x, adj = input
         h = self.linear.forward(x)
@@ -88,12 +103,13 @@ class HypLinear(nn.Module):
     Hyperbolic linear layer.
     """
 
-    def __init__(self, manifold, in_features, out_features, c, dropout, use_bias):
+    def __init__(self, manifold, in_features, out_features, c, dropout, use_bias,gain,):
         super(HypLinear, self).__init__()
         self.manifold = manifold
         self.in_features = in_features
         self.out_features = out_features
         self.c = c
+        self.gain = gain
         self.dropout = dropout
         self.use_bias = use_bias
         self.bias = nn.Parameter(torch.Tensor(out_features))
@@ -101,7 +117,15 @@ class HypLinear(nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
-        init.xavier_uniform_(self.weight, gain=math.sqrt(2))
+        # init.xavier_uniform_(self.weight, gain=self.gain)
+        # print("manifold.name",self.manifold.name)
+        if self.manifold.name == "Euclidean":
+            init.kaiming_uniform_(self.weight, a=self.gain,)
+            # init.xavier_uniform_(self.weight, gain=self.gain)
+        elif self.manifold.name == "PoincareBall":
+            init.kaiming_uniform_(self.weight, a=self.gain,)
+        elif self.manifold.name == "Hyperboloid":
+            init.kaiming_uniform_(self.weight, a=self.gain, )
         init.constant_(self.bias, 0)
 
     def forward(self, x):

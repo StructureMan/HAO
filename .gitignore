@@ -1,0 +1,6 @@
+checkpoints_*
+trainRecord
+processed
+data
+__pycache__
+.vscode
