@@ -31,7 +31,7 @@ In the label correction mode, the HAO-series model follows the workflow: (a) →
     SWAN:https://bitbucket.org/gsudmlab/workspace/projects/FP.
     GECCO:https://www.spotseven.de/gecco/gecco-challenge/gecco-challenge-2018. 
 3. Run the preprocess.py file to preprocess the downloaded data.
-
+![alt text](image.png)
 4. Activate the conda environment, eg., conda activate mtsad
 5. python main.py --dataset MSL --model HAO_E --epoch 2 --window_size 5 --description Demo --is_corrected 0, where is_corrected = 0 indicates no label correction, and 1 indicates label correction.
 ![runExample.png](runExample.png)
