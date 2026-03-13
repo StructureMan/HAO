@@ -8,54 +8,11 @@ from src.folderconstants import *
 from shutil import copyfile
 import matplotlib.pyplot as plt
 import re
-datasets = ['synthetic', 'SMD', 'SWaT', 'SMAP', 'MSL', 'WADI', 'MSDS', 'UCR', 'MBA', 'NAB', "ASD"]
+datasets = ['ASD', 'MSL', 'SMAP', 'SMD', 'SWaT', 'PSM', 'MSDS', 'synthetic', "SCADA", "PowerSystem", "WADI", "GAS",
+"CICIDS", "SKAB", "SWAN", "NEGCCO",'CVES']
 import wfdb
 from scipy.ndimage import gaussian_filter1d
-# 统计并处理低正例比例的列
-# def plotdata(train,test,label,dataset,sub_dataset):
-#     plt.clf()
-#     num_subfig = 1
-#     print(num_subfig)
-#     num_subfig = num_subfig * 3
-#     plt.figure(figsize=(30, 3 * num_subfig))
-#     op_label = np.zeros(shape=label.shape)
-    
-#     for item_fig in range(1, num_subfig , 3):
-#         # item_fig = 1
-#         data_item = item_fig // 3
-#         plt.subplot(num_subfig, 1, item_fig)
-#         plt.plot(train.T[data_item], c="blue", alpha=0.6, label=f"Train Data \n Sensor:{data_item}", linewidth=1.5)
-#         plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
 
-#         plt.subplot(num_subfig, 1, item_fig + 1)
-#         plt.plot(test.T[data_item], c="black", alpha=0.6, label="Test Data", linewidth=1.5)
-#         plt.fill_between(np.arange(label.shape[0]), label.T[data_item ], color='red', alpha=0.3,
-#                          label=f"GT Sensor:{data_item}")
-#         plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
-
-#         plt.subplot(num_subfig, 1, item_fig + 2)
-#         plt.plot(test.T[data_item ], c="black", alpha=0.6, label="Test Data", linewidth=1.5)
-#         plt.fill_between(np.arange(op_label.shape[0]), op_label.T[data_item ], color='blue', alpha=0.3,
-#                          label=f"OT Sensor:{data_item}")
-#         plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
-#         break
-#     # plt.fill_between(np.arange(labels.shape[0]), labels_val,
-#     #                  color='yellow', alpha=0.2, label="Val truth")
-#     # plt.fill_between(np.arange(labels.shape[0]), labels_val_pre,
-#     #                  color='blue', alpha=0.1, label="Val Pre")
-#     # plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
-#         # break
-#     # plt.subplot(num_subfig, 1, true.shape[1] + 1)
-#     # plt.plot(Struct_mess["Anomaly_max"], c="green", alpha=0.6, label="Rec Anomaly", linewidth=1.5)
-#     # plt.fill_between(np.arange(labels.shape[0]), labels.T[0] * Struct_mess["Anomaly_max"],
-#     #                  color='red', alpha=0.3, label="Ground truth")
-#     # # plt.plot(np.asarray(Struct_mess["scores_search"]).T, c="blue", alpha=0.6, label="SAnomaly Score", linewidth=1.5)
-#     # plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
-
-
-#     path = '{}-{}.png'.format(dataset,sub_dataset)
-#     print(path)
-#     plt.savefig(path)
 from tqdm import tqdm
 def validate_test_with_sliding_window_advanced(train, test, window_size=100, threshold=0.8, method='distance'):
     """
