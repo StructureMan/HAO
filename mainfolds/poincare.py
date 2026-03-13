@@ -30,72 +30,44 @@ class PoincareBall(Manifold):
         dist = dist_c * 2 / sqrt_c
         return dist ** 2
 
-    # def sqdistmatrix(self, p, c):
-    #     p1 = p.unsqueeze(1)
-    #     p2 = p.unsqueeze(0)
-    #     sqrt_c = c ** 0.5
-    #     midpoints = self.mobius_add(-p1, p2, c)
-    #     dist_c = artanh(sqrt_c * midpoints.norm(dim=1, keepdim=True))
-    #     dist = dist_c * 2 / c
-    #     dist = 2 / (1 + torch.exp(dist / sqrt_c))
-    #     return dist
+   
     def min_max_normalize(self,data, dim=None, epsilon=1e-8):
-        """
-        对张量进行 Min-Max 归一化，将其缩放到 [0, 1] 区间
-
-        参数:
-            tensor: 输入张量
-            dim: 沿指定维度计算最小最大值 (None 表示全局归一化)
-            epsilon: 防止除零的小常数
-
-        返回:
-            归一化后的张量
-        """
+    
         if dim is not None:
-            # 沿指定维度计算最小最大值
+
             min_val = data.min(dim=dim, keepdim=True).values
             max_val = data.max(dim=dim, keepdim=True).values
         else:
-            # 全局最小最大值
+
             min_val = data.min()
             max_val = data.max()
 
-        # 防止除零
+
         range_val = max_val - min_val
         range_val = torch.where(range_val == 0, torch.ones_like(range_val) * epsilon, range_val)
 
-        # 应用 Min-Max 公式
+
         normalized = (data - min_val) / range_val
 
         return normalized
     def mean_normalize(self, data, dim=None, epsilon=1e-8):
-        """
-        对张量进行 Mean-Normalization，将其缩放到 [-1, 1] 区间附近，均值为 0
-
-        参数:
-            tensor: 输入张量
-            dim: 沿指定维度计算均值、最小最大值 (None 表示全局归一化)
-            epsilon: 防止除零的小常数
-
-        返回:
-            归一化后的张量
-        """
+       
         if dim is not None:
-            # 沿指定维度计算均值、最小最大值
+
             mean_val = data.mean(dim=dim, keepdim=True)
             min_val = data.min(dim=dim, keepdim=True).values
             max_val = data.max(dim=dim, keepdim=True).values
         else:
-            # 全局均值、最小最大值
+
             mean_val = data.mean()
             min_val = data.min()
             max_val = data.max()
 
-        # 防止除零
+
         range_val = max_val - min_val
         range_val = torch.where(range_val == 0, torch.ones_like(range_val) * epsilon, range_val)
 
-        # 应用 Mean-Normalization 公式
+       
         normalized = (data - mean_val) / range_val
 
         return normalized
@@ -103,13 +75,10 @@ class PoincareBall(Manifold):
 
 
     def sym_norm_adj(self,adj, add_self_loop=True):
-        """
-        adj: torch.FloatTensor (n,n)  0/1 或权重，对称
-        return 对称归一化邻接矩阵 Â
-        """
+
         if add_self_loop:
             adj = adj + torch.eye(adj.size(0), device=adj.device)
-        deg = adj.sum(1)  # 度向量
+        deg = adj.sum(1)  
         deg_inv_sqrt = torch.pow(deg, -0.5)
         deg_inv_sqrt[torch.isinf(deg_inv_sqrt)] = 0.
         D_inv_sqrt = torch.diag(deg_inv_sqrt)
@@ -120,18 +89,18 @@ class PoincareBall(Manifold):
         p1 = p.unsqueeze(1)  # (n, 1, d)
         p2 = p.unsqueeze(0)  # (1, n, d)
 
-        # 计算 Mobius 加法，输出形状应为 (n, n, d)
+
         midpoints = self.mobius_add(-p1, p2, c)
 
-        # 计算范数，按最后一个维度计算，输出形状为 (n, n)
+  
         norm_midpoints = midpoints.norm(dim=-1)
 
-        # 计算双曲距离
-        dist_c = artanh(sqrt_c * norm_midpoints)  # 输出形状为 (n, n)
-        sqdist = dist_c * 2 / sqrt_c  # 调整尺度
+
+        dist_c = artanh(sqrt_c * norm_midpoints)  
+        sqdist = dist_c * 2 / sqrt_c  
         sqdist = sqdist ** 2
 
-        # sqdist = self.min_max_normalize(sqdist)
+
         if adj is None:
             sqdist = torch.tanh(sqdist)
         else:

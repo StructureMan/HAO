@@ -40,148 +40,67 @@ class Hyperboloid(Manifold):
         # clamp distance to avoid nans in Fermi-Dirac decoder
         return torch.clamp(sqdist, max=50.0)
     def mean_normalize(self, data, dim=None, epsilon=1e-8):
-        """
-        对张量进行 Mean-Normalization，将其缩放到 [-1, 1] 区间附近，均值为 0
-
-        参数:
-            tensor: 输入张量
-            dim: 沿指定维度计算均值、最小最大值 (None 表示全局归一化)
-            epsilon: 防止除零的小常数
-
-        返回:
-            归一化后的张量
-        """
+      
         if dim is not None:
-            # 沿指定维度计算均值、最小最大值
+
             mean_val = data.mean(dim=dim, keepdim=True)
             min_val = data.min(dim=dim, keepdim=True).values
             max_val = data.max(dim=dim, keepdim=True).values
         else:
-            # 全局均值、最小最大值
+
             mean_val = data.mean()
             min_val = data.min()
             max_val = data.max()
 
-        # 防止除零
+
         range_val = max_val - min_val
         range_val = torch.where(range_val == 0, torch.ones_like(range_val) * epsilon, range_val)
 
-        # 应用 Mean-Normalization 公式
+
         normalized = (data - mean_val) / range_val
 
         return normalized
     def min_max_normalize(self, data, dim=None, epsilon=1e-8):
-        """
-        对张量进行 Min-Max 归一化，将其缩放到 [0, 1] 区间
 
-        参数:
-            tensor: 输入张量
-            dim: 沿指定维度计算最小最大值 (None 表示全局归一化)
-            epsilon: 防止除零的小常数
-
-        返回:
-            归一化后的张量
-        """
         if dim is not None:
-            # 沿指定维度计算最小最大值
+
             min_val = data.min(dim=dim, keepdim=True).values
             max_val = data.max(dim=dim, keepdim=True).values
         else:
-            # 全局最小最大值
+
             min_val = data.min()
             max_val = data.max()
 
-        # 防止除零
+
         range_val = max_val - min_val
         range_val = torch.where(range_val == 0, torch.ones_like(range_val) * epsilon, range_val)
 
-        # 应用 Min-Max 公式
+
         normalized = (data - min_val) / range_val
 
         return normalized
     def sqdistmatrix(self, matrix, c, adj):
-        """
-        向量化计算矩阵任意两行之间的距离
-
-        参数:
-            matrix: 形状为 [n_rows, n_cols] 的张量
-            c: 曲率参数
-
-        返回:
-            distances: 形状为 [n_rows, n_rows] 的张量
-        """
+       
         n_rows = matrix.size(0)
 
-        # 使用广播机制计算所有行对之间的距离
-        # 增加维度以便进行广播
+      
         x1 = matrix.unsqueeze(1)  # [n_rows, 1, n_cols]
         x2 = matrix.unsqueeze(0)  # [1, n_rows, n_cols]
 
-        # 计算闵可夫斯基内积
-        # 对于hyperboloid流形: -x0*y0 + x1*y1 + ... + xd*yd
+       
         prod = self.minkowski_dot(x2, x1)
 
         K = 1. / c
         theta = torch.clamp(-prod / K, min=1.0 + self.eps[matrix.dtype])
         sqdist = K * arcosh(theta) ** 2
         sqdist = sqdist.squeeze(dim=2)
-        # sqdist = torch.log_(sqdist  + 1.1)
-
-        # sqdist = torch.log_(sqdist + 1.1)
-        # sqdist = self.min_max_normalize(sqdist + adj,dim=1)
-        # sqdist = torch.abs(sqdist)
-        # sqdist = self.min_max_normalize(sqdist)
+       
         if adj is None:
             sqdist = torch.tanh(sqdist)
         else:
             sqdist = torch.tanh(sqdist + adj)
         return sqdist
-    # def sqdistmatrix(self, x, c):
-    #
-    #     x1 = x.unsqueeze(1)
-    #     x2 = x.unsqueeze(0)
-    #     K = 1. / c
-    #     sqrt_c = c ** 0.5
-    #     # eys = torch.eye(x.shape[0],device=x.device)
-    #     prod = self.minkowski_dot(x2, x1)
-    #     # theta = torch.clamp(-prod / K, min=1.0 + self.eps[x.dtype])
-    #     sqdist = K * arcosh(-prod / c )
-    #     sqdist = sqdist.squeeze(dim=2)
-    #     return torch.tanh(sqdist)
-    # def sqdistmatrix(self, x, c):
-    #     # o = torch.zeros_like(x)
-    #     # x = torch.cat([o[:, 0:1], x], dim=1)
-    #     # 增加两个维度，使得 x 能够进行广播
-    #     # print(x)
-    #     x1 = x.unsqueeze(1)
-    #     x2 = x.unsqueeze(0)
-    #     K = 1. / c
-    #     sqrt_c = c ** 0.5
-    #     # 计算所有行向量之间的闵可夫斯基内积
-    #     prod = self.minkowski_dot(x2, x1,keepdim=False).norm(dim=-1)
-    #     print(prod.size(),prod)
-    #     # 计算夹角并避免数值不稳定
-    #     theta = torch.clamp(-prod / K, min=1.0 + self.eps[x.dtype])
-    #
-    #     # 计算距离的平方
-    #     sqdist = K * arcosh(theta)** 2
-    #
-    #     # sqdist = sqdist.squeeze(dim=2)
-    #     # 将距离的平方限制在最大值 50.0 以避免数值问题
-    #     # sqdist = torch.clamp(sqdist, max=50.0)
-    #     # print(sqdist.size(), sqdist)
-    #     # sqdist = 2/(1 + torch.exp(sqdist /sqrt_c))
-    #     # sqdist = 2 / (1 + torch.exp(sqdist / sqrt_c))
-    #     # mask = ~torch.eye(x.size(0), dtype=torch.bool, device=x.device)  # 非对角线掩码
-    #     # sqdist = torch.where(
-    #     #     (sqdist > 0.9999) & mask,  # 检测接近1的非对角线元素
-    #     #     torch.zeros_like(sqdist),  # 符合条件的置0
-    #     #     sqdist  # 其他保持原值
-    #     # )
-    #     # sqdist.fill_diagonal_(1.0)  # 自相似度为1
-    #
-    #     # return
-    #     return torch.sigmoid(torch.clamp(sqdist, max=50.0)/sqrt_c)
+   
     def proj(self, x, c):
         K = 1. / c
         d = x.size(-1) - 1

@@ -51,10 +51,7 @@ class HNNLayer(nn.Module):
         self.hyp_act = HypAct(manifold, c, c, act)
     
     def reset_parameters(self):
-        """
-        初始化 HNNLayer 中所有可学习参数
-        """
-        # 初始化 HypLinear 层参数
+
         if hasattr(self, 'linear') and hasattr(self.linear, 'reset_parameters'):
             self.linear.reset_parameters()
 
@@ -75,16 +72,12 @@ class HyperbolicGraphConvolution(nn.Module):
         self.agg = HypAgg(manifold, c_in, out_features, dropout, use_att, local_agg)
         self.hyp_act = HypAct(manifold, c_in, c_out, act)
     def reset_parameters(self):
-        """
-        初始化 HyperbolicGraphConvolution 中所有可学习参数
-        """
-        # 初始化 HypLinear 层参数
+        
         if hasattr(self, 'linear') and hasattr(self.linear, 'reset_parameters'):
             self.linear.reset_parameters()
-            
-        # 初始化 HypAgg 层参数（如果有注意力机制）
+      
         if hasattr(self, 'agg') and hasattr(self.agg, 'att'):
-            # DenseAtt 模块的参数初始化应该在其自身类中完成
+
             if hasattr(self.agg, 'att') and hasattr(self.agg.att, 'reset_parameters'):
                 self.agg.att.reset_parameters()
     def forward(self, input):
@@ -93,8 +86,6 @@ class HyperbolicGraphConvolution(nn.Module):
         h = self.agg.forward(h, adj)
         h = self.hyp_act.forward(h)
         output = h, adj
-        # print(self.t_adj_w.weight())
-        # output = h, self.t_adj_w(adj)
         return output
 
 
