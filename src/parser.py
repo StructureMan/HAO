@@ -13,6 +13,31 @@ parser.add_argument('--model',
                     required=False,
                     default='GSL_AD',
                     help="model name")
+parser.add_argument('--epoch',
+                    metavar='-e',
+                    type=int,
+                    required=False,
+                    default=1,
+                    help="number of epochs")
+parser.add_argument('--window_size',
+                    metavar='-w',
+                    type=int,
+                    required=False,
+                    default=5,
+                    help="window size")
+
+parser.add_argument('--description',
+                    metavar='-d',
+                    type=str,
+                    required=False,
+                    default="Demo",
+                    help="experiment description")
+parser.add_argument('--is_corrected',
+                    metavar='-c',
+                    type=int,
+                    required=False,
+                    default=1,
+                    help="whether to use corrected labels")
 parser.add_argument('--gpu',
                     metavar='-m',
                     type=int,

@@ -15,7 +15,7 @@ During the online detection stage, the model achieves precise anomaly localizati
 # Multivariate Anomaly Label Correction
 In the label correction mode, the HAO-series model follows the workflow: (a) → (b) → (c). In the baseline mode without label correction, it follows: (a) → (c).
 ![LabelCorrectionProcess.jpg](LabelCorrectionProcess.jpg)
-# How to run?
+# Execute
 1. Install the operating environment of the HAO model [HAO-Linux_request.txt](HAO-Linux_request.txt).
 2. Download the required dataset to [data](data).
     The benchmark datasets used in this study are all publicly available on the Internet and can be accessed through the following URLs:
@@ -31,7 +31,10 @@ In the label correction mode, the HAO-series model follows the workflow: (a) →
     SWAN:https://bitbucket.org/gsudmlab/workspace/projects/FP.
     GECCO:https://www.spotseven.de/gecco/gecco-challenge/gecco-challenge-2018. 
 3. Run the preprocess.py file to preprocess the downloaded data.
-4. Run cmd [main.py](main.py): python main.py --dataset ASD --model HAO --windowsize 5 --epoch 1 --space Euclidea --dataRate 0.9
+
+4. Activate the conda environment, eg., conda activate mtsad
+5. python main.py --dataset MSL --model HAO_E --epoch 2 --window_size 5 --description Demo --is_corrected 0, where is_corrected = 0 indicates no label correction, and 1 indicates label correction.
+
 # Experimental Results Examples
 ## Multivariate Anomaly Recognition
 ![MAR.png](MAR.png)

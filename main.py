@@ -1989,22 +1989,26 @@ def getTrainHistory(model, epoch_mod, dataset, batch=None, window="", desc="",ba
 
 
 if __name__ == '__main__':
-    desc = "Demo"
-    batch_size = [256]
-    Dataset = ['ASD', 'MSL', 'SMAP', 'SMD', 'SWaT', 'PSM', 'MSDS', 'synthetic', "SCADA", "PowerSystem", "WADI", "GAS", "CICIDS", "SKAB", "SWAN", "NEGCCO"]
-    Dataset= ["MSL"]
     
-    # Ablation experiments
-    models_e = ["HAO_E_HDNN", "HAO_E_T_HGCN", "HAO_E_S_HGCN", "HAO_E_AHGSD", "HAO_E_MSCD"]
-    models_h = ["HAO_H_HDNN", "HAO_H_T_HGCN", "HAO_H_S_HGCN", "HAO_H_AHGSD", "HAO_H_MSCD"]
-    models_p = ["HAO_P_HDNN", "HAO_P_T_HGCN", "HAO_P_S_HGCN", "HAO_P_AHGSD", "HAO_P_MSCD"]
-    compare = ["MERLIN","OmniAnomaly", "MAD_GAN", "MSCRED", "MTAD_GAT", "GDN", "CAE_M", "TranAD", "STADN", "GRN", "DGINet","TS_GAT"]
-    models = ["HAO_E", "HAO_P", "HAO_H"] + compare + models_e + models_h + models_p
-    models = ["HAO_E"]
-    epoch = 1
-    WindowSize = [15]
-    is_corrected = True
-    # Comparative experiment testing
+    # Note: When running the label correction mode, the execution of the HAO-series must be completed first, 
+    # and fine-grained labels for the corresponding dataset will be generated automatically.
+    commands = sys.argv[1:]
+    desc = commands[9]
+    # File Identification Flag
+    batch_size = [256]
+    Dataset= [commands[1]]
+    models = [commands[3]]
+    epoch = int(commands[5])
+    WindowSize = [int(commands[7])]
+    if commands[11] == '0':
+        is_corrected = False
+        print(f'{color.HEADER}Using original  labels for training and evaluation.{color.ENDC}')
+      
+    else:
+        is_corrected = True
+        print(f'{color.HEADER}Using corrected original labels for training and evaluation.{color.ENDC}')
+
+
     for b in batch_size:
         for m in models:
             for d in Dataset:
@@ -2018,3 +2022,4 @@ if __name__ == '__main__':
                                              item_dataSet=item_dataSet, desc=desc,is_corrected=is_corrected)
                         except Exception as e:
                             print(traceback.print_exc())
+                            
