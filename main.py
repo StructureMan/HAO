@@ -2002,7 +2002,7 @@ if __name__ == '__main__':
     WindowSize = [int(commands[7])]
     if commands[11] == '0':
         is_corrected = False
-        print(f'{color.HEADER}Using original  labels for training and evaluation.{color.ENDC}')
+        print(f'{color.HEADER}Using original labels for training and evaluation.{color.ENDC}')
       
     else:
         is_corrected = True
