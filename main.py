@@ -861,7 +861,10 @@ def get_finelabel(dataset, item_dataSet, batch_size, desc, label, model, search_
                                                                                     )) + f"model-{m}_{batch_size}_test_data_epoch_{1}_{s}.json"
 
                     # Load fine-grained labels
-                    fine_label = np.load(label_fine_path, allow_pickle=True)
+                    try:
+                        fine_label = np.load(label_fine_path, allow_pickle=True)
+                    except:
+                        raise FileNotFoundError(f"Fine-grained label file not found: {label_fine_path}")
 
                     # Compute correct labels (at least one anomaly)
                     Correctfinelabel = (np.sum(fine_label, axis=1) >= 1).astype(int)
@@ -882,7 +885,7 @@ def get_finelabel(dataset, item_dataSet, batch_size, desc, label, model, search_
                         label_fine_path_o = label_fine_path
                         best_up_path = current_best_up_path
                 except:
-                    continue
+                    raise FileNotFoundError(f"Fine-grained label file not found: {label_fine_path}")
     else:
         # Search for the best fine-grained labels for the specified model
         for s in search_spliteData:
@@ -902,7 +905,11 @@ def get_finelabel(dataset, item_dataSet, batch_size, desc, label, model, search_
                                                                                 )) + f"model-{model}_{batch_size}_test_data_epoch_{1}_{s}.json"
 
                 # Load fine-grained labels
-                fine_label = np.load(label_fine_path, allow_pickle=True)
+                
+                try:
+                    fine_label = np.load(label_fine_path, allow_pickle=True)
+                except:
+                    raise FileNotFoundError(f"Fine-grained label file not found: {label_fine_path}")
 
                 # Compute correct labels (at least one anomaly)
                 Correctfinelabel = (np.sum(fine_label, axis=1) >= 1).astype(int)
@@ -923,7 +930,7 @@ def get_finelabel(dataset, item_dataSet, batch_size, desc, label, model, search_
                     label_fine_path_o = label_fine_path
                     best_up_path = current_best_up_path
             except:
-                continue
+                raise FileNotFoundError(f"Fine-grained label file not found: {label_fine_path}")
 
     # Default hyperparameters
     best_up = {
@@ -1996,7 +2003,7 @@ if __name__ == '__main__':
     models = ["HAO_E"]
     epoch = 1
     WindowSize = [15]
-    is_corrected = False
+    is_corrected = True
     # Comparative experiment testing
     for b in batch_size:
         for m in models:
