@@ -85,7 +85,7 @@ class dataLoader(Dataset):
 
         # Models that require flattening of sliding windows
         self.limitModel = [
-                           'MSCRED', 'CAE_M', 'MTAD_GAT', "GRN", "STADN", "TS_GAT", "DGINet", "GDN", 'MAD_GAN', "TranAD",
+                           'MSCRED', 'CAE_M', 'MTAD_GAT', "GDN", 'MAD_GAN', "TranAD",
                            "HAO_E", "HAO_E_HDNN", "HAO_E_T_HGCN", "HAO_E_S_HGCN", "HAO_E_AHGSD", "HAO_P_MSCD", 
                            "HAO_P", "HAO_P_HDNN", "HAO_P_T_HGCN", "HAO_P_S_HGCN", "HAO_P_AHGSD", "HAO_E_MSCD",
                            "HAO_H", "HAO_H_HDNN",  "HAO_H_T_HGCN", "HAO_H_S_HGCN", "HAO_H_AHGSD", "HAO_H_MSCD",                       
@@ -95,7 +95,7 @@ class dataLoader(Dataset):
         self.limitStackModel = ["DGINet"]
         
         # Models that use default window settings
-        exception_models = ["GDN", "GRN", "STADN", "TS_GAT","MAD_GAN","TranAD", "DGINet", 
+        exception_models = ["GDN","MAD_GAN","TranAD",
                             "HAO_E", "HAO_E_HDNN", "HAO_E_T_HGCN", "HAO_E_S_HGCN", "HAO_E_AHGSD", "HAO_P_MSCD", 
                             "HAO_P", "HAO_P_HDNN", "HAO_P_T_HGCN", "HAO_P_S_HGCN", "HAO_P_AHGSD", "HAO_E_MSCD",
                             "HAO_H", "HAO_H_HDNN",  "HAO_H_T_HGCN", "HAO_H_S_HGCN", "HAO_H_AHGSD", "HAO_H_MSCD",
@@ -414,7 +414,7 @@ def backprop(epoch, model, data, dataO, optimizer, scheduler, training=True, adj
             return MSE.cpu().detach().numpy(), y_pred.cpu().detach().numpy(), None, data.to(device)
 
     # Handle GDN, MTAD_GAT, and related models
-    elif model.name in ["GDN", "MTAD_GAT", "MSCRED", "CAE_M", "GRN", "TS_GAT", "STADN",
+    elif model.name in ["GDN", "MTAD_GAT", "MSCRED", "CAE_M",
                         "HAO_E", "HAO_E_HDNN", "HAO_E_T_HGCN", "HAO_E_S_HGCN", "HAO_E_AHGSD", "HAO_E_MSCD",
                         "HAO_P", "HAO_P_HDNN", "HAO_P_T_HGCN", "HAO_P_S_HGCN", "HAO_P_AHGSD", "HAO_P_MSCD",
                         "HAO_H", "HAO_H_HDNN", "HAO_H_T_HGCN", "HAO_H_S_HGCN", "HAO_H_AHGSD", "HAO_H_MSCD"]:
