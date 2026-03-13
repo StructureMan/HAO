@@ -46,4 +46,5 @@ Industrial Internet of Things and complex information systems face challenges in
 Notably, this study observes significant topological isomorphism in medium-scale systems across different domains, which offers important theoretical insights for cross-domain knowledge transfer and zero-sample anomaly detection. Future works could involve constructing a universal natural topology library and developing transfer learning methods based on topological isomorphism. This would significantly reduce the reliance of anomaly detection models on labeled data and promote the large-scale application of anomaly detection technologies in more emerging industrial scenarios.
 # Acknowledgements
 【1】Tuli, S. et al. TranAD: Deep transformer networks for anomaly detection in multivariate time series data. In {Proc. VLDB Endow.} \textbf{15}, 1201–1214 (2022).
+
 【2】Nickel, M. and Kiela, D. Learning continuous hierarchies in the Lorentz model of hyperbolic geometry. In {Proc. Int. Conf. Mach. Learn.}, 3776–3785 (2018).
